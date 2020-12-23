@@ -16,6 +16,11 @@ class UserController extends Controller
 {
     use PasswordValidationRules;
 
+    public function fetch(Request $request)
+    {
+        return ResponseFormatter::success($request->user(), 'Data profile berhasil diambil');
+    }
+
     public function login(Request $request)
     {
         try {
@@ -107,11 +112,6 @@ class UserController extends Controller
         $token = $request->user()->currentAccessToken()->delete();
 
         return ResponseFormatter::success($token, 'Token revoked');
-    }
-
-    public function fetch(Request $request)
-    {
-        return ResponseFormatter::success($request->user(), 'Data profile berhasil diambil');
     }
 
     public function updateProfile(Request $request)
