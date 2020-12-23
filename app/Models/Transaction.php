@@ -17,12 +17,12 @@ class Transaction extends Model
 
     public function food()
     {
-        $this->hasOne(Food::class, 'id', 'food_id');
+        return $this->hasOne(Food::class, 'id', 'food_id');
     }
 
     public function user()
     {
-        $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 
     public function getCreatedAtAttribute($value)
