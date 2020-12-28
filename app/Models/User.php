@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
@@ -19,6 +21,7 @@ class User extends Authenticatable
     use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +29,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'address', 'houseNumber', 'phoneNumber', 'city', 'roles',
+        'name', 'email', 'password', 'address', 'houseNumber', 'phoneNumber', 'city', 'roles', 'profile_photo_path',
     ];
 
     /**
@@ -67,5 +70,17 @@ class User extends Authenticatable
     public function getUpdatedAtAttribute($value)
     {
         return Carbon::parse($value)->timestamp;
+    }
+
+    public function toArray()
+    {
+        $toArray = parent::toArray();
+        $toArray['profile_photo_path'] = $this->profile_photo_path;
+        return $toArray;
+    }
+
+    public function getProfilePhotoPathAttribute()
+    {
+        return url('') . Storage::url($this->attributes['profile_photo_path']);
     }
 }

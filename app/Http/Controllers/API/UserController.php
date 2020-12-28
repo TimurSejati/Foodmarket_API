@@ -33,7 +33,7 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return ResponseFormatter::error([
                     'error' => $validator->errors(),
-                ], 'Authentication failed', 401);
+                ], 'Authentication failed', 422);
             }
 
             $credentials = request(['email', 'password']);
@@ -78,7 +78,9 @@ class UserController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors());
+                return ResponseFormatter::error([
+                    'error' => $validator->errors(),
+                ], 'The given data was invalid', 422);
             }
 
             User::create([
@@ -92,13 +94,13 @@ class UserController extends Controller
             ]);
 
             $user = User::where('email', $request->email)->first();
-            $tokenResult = $user->createToken('authToken')->plainTextToken();
+            $tokenResult = $user->createToken('authToken')->plainTextToken;
 
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user,
-            ]);
+            ], 'Success register', 200);
 
         } catch (Exception $error) {
             return ResponseFormatter::error([
